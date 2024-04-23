@@ -1,4 +1,4 @@
-const port = 23457;
+const port = 23460;
 const loggerMaxOutput = 65536;
 const stringMaxLen = 0x1000000; // ~16MB
 const queryLimit = 1024;
@@ -20,6 +20,7 @@ const logoutRouter = "http://10.8.103.154:5000/translator/logout"
 const docxTranslateRouter = "http://10.8.103.154:5000/translator/docxtranslate"
 const collectRouter = "http://10.8.103.154:5000/translator/collect"
 const askRouter = "http://10.8.103.154:5002/searcher/ask"
+const uploadRouter = "http://10.8.103.154:5002/searcher/upload"
 
 module.exports = {
     port,
@@ -43,5 +44,6 @@ module.exports = {
     logoutRouter,
     docxTranslateRouter,
     collectRouter,
-    askRouter
+    askRouter,
+    uploadRouter
 }

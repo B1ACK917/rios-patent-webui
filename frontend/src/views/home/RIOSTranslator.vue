@@ -165,8 +165,7 @@ export default {
                   Keyword2: ''
               }
             ],
-            translated_seqs: [
-            ],
+            translated_seqs: [],
             in_lang: 'Chinese',
             out_lang: 'English',
             cookie: 'sessionid=abc',

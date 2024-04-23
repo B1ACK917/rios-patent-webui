@@ -14,18 +14,38 @@ const app = express();
 const multer = require('multer');
 const { table } = require('console');
 
-//const storage = multer.diskStorage({
-//  destination: (req, file, cb)=>{
-//    cb(null, '/work/stu/dtu/work/tmp/')
-//  },
-//  filename: (req, file, cb)=>{
-//    cb(null, file.originalname)
-//  }
-//})
-//
-//const upload = multer({ storage: storage })
+const { promisify } = require('util')
+const unlinkAsync = promisify(fs.unlink)
 
-const upload = multer({ dest: 'uploads/' })
+const mult_storage = multer.diskStorage({
+  destination: (req, file, cb)=>{
+    cb(null, 'uploads/')
+  },
+  //filename: (req, file, cb)=>{
+  //  cb(null, file.originalname)
+  //}
+})
+
+
+const allowedFileExtensions = ['docx', 'pdf', 'xlsx'];
+
+const upload = multer({storage: mult_storage,
+                       limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
+                       fileFilter: (req, file, cb) => {
+                         const extension = file.originalname.split('.').pop();
+                         console.log(extension);
+                         if (allowedFileExtensions.includes(extension)) {
+                             cb(null, true);
+                         } else {
+                             cb(null, false);
+                             const err = new Error('Only .docx, .pdf and .xlsx format allowed!')
+                             err.name = 'ExtensionError'
+                             return cb(err);
+                         }
+                       }
+                     })
+
+//const upload = multer({ dest: 'uploads/' })
 
 
 
@@ -370,7 +390,7 @@ app.get('/load', async (req, res) => {
     res.send(response.data)
 })
 
-app.post('/docxtranslate', async (req, res, next) => { req.setTimeout(0); next(); }, upload.single('docx'), async (req, res) => {
+app.post('/docxtranslate', async (req, res, next) => { req.setTimeout(0); next(); }, upload.single('file'), async (req, res) => {
     logger.info("Call /docxtranslate");
     res.setHeader("Access-Control-Allow-Origin", "*");
     cookie = req.query.cookie;
@@ -386,12 +406,13 @@ app.post('/docxtranslate', async (req, res, next) => { req.setTimeout(0); next()
     });
 
     var formData = new FormData();
-    docx = fs.createReadStream(req.file.path);
-    formData.append('docx', docx, 'tmp.docx');
+    file = fs.createReadStream(req.file.path);
+    formData.append('files', file);
     in_lang = req.query.in_lang;
     out_lang = req.query.out_lang;
     formData.append('in_lang', in_lang);
     formData.append('out_lang', out_lang);
+    await unlinkAsync(req.file.path);
     response = await api.post(global.docxTranslateRouter, formData);
     res.send(response.data)
 })
@@ -422,6 +443,32 @@ app.get('/ask', async (req, res) => {
     }
     response = await api.get(global.askRouter, { params: payload })
     res.send(response.data)
+})
+
+app.post('/upload', async (req, res, next) => { req.setTimeout(0); next(); }, upload.array('file'), async (req, res) => {
+    logger.info("Call /upload");
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    const api = axios.create({
+        withCredentials: true,
+        headers: {
+            'Content-Type': "multipart/form-data; charset=utf-8; boundary=" + Math.random().toString().substr(2),
+        },
+        timeout: 0,
+        xsrfCookieName: 'csrf_access_token',
+        xsrfHeaderName: "x-csrftoken"
+    });
+
+
+    for (let i = 0; i < req.files.length; i++) {
+      var formData = new FormData();
+      f = fs.createReadStream(req.files[i].path);
+      formData.append('files', f);
+      fname = req.query.fname;
+      formData.append('fname', fname[i]);
+      await unlinkAsync(req.files[i].path);
+      await api.post(global.uploadRouter, formData);
+    }
+    res.status(200).end("Files uploaded.")
 })
 
 module.exports = app
