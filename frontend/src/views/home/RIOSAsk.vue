@@ -36,7 +36,6 @@
 
       <div class="modal" v-if="showAsk">
         <div class="modal-content" ref="modalRef">
-          <button class="close-x" @click="closePopup"> X</button>
           <div class="modal-header">
             <h1>Result</h1>
           </div>

@@ -285,7 +285,7 @@ export default {
         async submit() {
           this.submit_clicked = true;
           var formData = new FormData();
-          formData.append('docx', this.docx);
+          formData.append('file', this.docx);
           await axios.post(r_const.queryDocxTranslate, formData, 
           { params: {in_lang: this.in_lang,
                      out_lang: this.out_lang,
