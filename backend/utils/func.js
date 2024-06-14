@@ -147,7 +147,7 @@ function writeCsvToDisk(taskID, JSONString) {
 }
 
 
-setTimeout(refreshHDFSFileList, 0)
+// setTimeout(refreshHDFSFileList, 0)
 
 module.exports = {
     sleep,
