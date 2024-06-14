@@ -65,7 +65,7 @@ export default {
         document.body.removeChild(a);
         try {
           const delay = ms => new Promise(res => setTimeout(res, ms));
-          await axios.get(r_const.queryCollect,  {params: {json: data}});
+          await axios.get(r_const.queryCollectData,  {params: {json: data}});
           await delay(2000);
           this.save_clicked = false;
         } catch (err) {

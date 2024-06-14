@@ -113,8 +113,11 @@
           <el-tab-pane label="RIOS Collect" name="collect">
             <r-collect ref="collectTab"></r-collect>
           </el-tab-pane>
-          <el-tab-pane label="RIOS Ask" name="ask">
-            <r-ask ref="searchTab"></r-ask>
+          <!--<el-tab-pane label="RIOS Ask" name="ask">
+            <r-ask ref="askTab"></r-ask>
+          </el-tab-pane>-->
+          <el-tab-pane label="RIOS FileManager" name="filemanager">
+            <r-filemanage ref="fileManagerTab"></r-filemanage>
           </el-tab-pane>
           <!-- <el-tab-pane v-for="(item) in editableTabs" :key="item.name" :label="item.title" :name="item.name">
             <component :is="item.content"></component>
@@ -135,7 +138,8 @@ import SearchPage from './recommend/SearchPage.vue';
 import SQLGenPage from './home/RIOSText2sql.vue'
 import RIOSTranslator from './home/RIOSTranslator.vue'
 import RIOSCollect from './home/RIOSCollect.vue'
-import RIOSAsk from './home/RIOSAsk.vue'
+//import RIOSAsk from './home/RIOSAsk.vue'
+import FileManager from './file_manager/FileManager.vue';
 import * as r_const from '@/router/consts'
 import axios from 'axios';
 
@@ -148,7 +152,8 @@ export default {
     'r-sqlgen': SQLGenPage,
     'r-translator': RIOSTranslator,
     'r-collect': RIOSCollect,
-    'r-ask': RIOSAsk
+    //'r-ask': RIOSAsk,
+    'r-filemanage': FileManager,
   },
   data() {
     return {

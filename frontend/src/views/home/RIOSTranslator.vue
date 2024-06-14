@@ -192,7 +192,7 @@ export default {
         async loginExec() {
           try {
             this.login_clicked = true;
-            await axios.get(r_const.queryLogin,
+            await axios.get(r_const.queryTranslatorLogin,
                            {params: {cookie: 'sessionid='+this.user}},
                            {withCredentials: true});
             this.login_clicked = false;
@@ -204,7 +204,7 @@ export default {
         async logoutExec() {
           try {
             this.logout_clicked = true;
-            await axios.get(r_const.queryLogout,
+            await axios.get(r_const.queryTranslatorLogout,
                            {params: {cookie: 'sessionid='+this.user}},
                            {withCredentials: true});
             this.logout_clicked = false;
@@ -217,7 +217,7 @@ export default {
           try {
             this.translate_clicked = true;
             this.out_text = " ";
-            const response = await axios.get(r_const.queryTranslate,
+            const response = await axios.get(r_const.queryTranslateText,
                                             {params: {text: this.in_text,
                                                       in_lang: this.in_lang,
                                                       out_lang: this.out_lang,
@@ -241,7 +241,7 @@ export default {
             });
             src_retrain = src_retrain.slice(0, -2);
             tgt_retrain = tgt_retrain.slice(0, -2);
-            await axios.get(r_const.queryRetrain,
+            await axios.get(r_const.queryRetrainModel,
                             {params: {src_text: src_retrain,
                                       tgt_text: tgt_retrain,
                                       in_lang: this.in_lang,
@@ -256,7 +256,7 @@ export default {
         async saveExec() {
           try {
             this.save_clicked = true;
-            await axios.get(r_const.querySave,
+            await axios.get(r_const.querySaveModel,
                             {params: {path: this.save_path,
                                       cookie: 'sessionid='+this.user}},
                             {withCredentials: true});  
@@ -269,7 +269,7 @@ export default {
         async loadExec() {
           try {
             this.load_clicked = true;
-            await axios.get(r_const.queryLoad,
+            await axios.get(r_const.queryLoadModel,
                            {params: {path: this.load_path,
                                      cookie: 'sessionid='+this.user}},
                            {withCredentials: true});  
@@ -286,7 +286,7 @@ export default {
           this.submit_clicked = true;
           var formData = new FormData();
           formData.append('file', this.docx);
-          await axios.post(r_const.queryDocxTranslate, formData, 
+          await axios.post(r_const.queryTranslateFile, formData, 
           { params: {in_lang: this.in_lang,
                      out_lang: this.out_lang,
                      cookie: 'sessionid='+this.user}},

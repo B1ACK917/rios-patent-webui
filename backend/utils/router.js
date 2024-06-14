@@ -27,7 +27,7 @@ const mult_storage = multer.diskStorage({
 })
 
 
-const allowedFileExtensions = ['docx', 'pdf', 'xlsx'];
+const allowedFileExtensions = ['docx', 'pdf', 'xlsx', 'mp4', 'png'];
 
 const upload = multer({storage: mult_storage,
                        limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
@@ -268,8 +268,8 @@ app.get('/recommend', async (req, res) => {
 })
 
 
-app.get('/login', async (req, res) => {
-    logger.info("Call /login");
+app.get('/translatorLogin', async (req, res) => {
+    logger.info("Call /translatorLogin");
     res.setHeader("Access-Control-Allow-Origin", "*");
     cookie = req.query.cookie;
     const api = axios.create({
@@ -284,8 +284,8 @@ app.get('/login', async (req, res) => {
     res.send(response.data)
 })
 
-app.get('/logout', async (req, res) => {
-    logger.info("Call /logout");
+app.get('/translatorLogout', async (req, res) => {
+    logger.info("Call /translatorLogout");
     res.setHeader("Access-Control-Allow-Origin", "*");
     cookie = req.query.cookie;
     const api = axios.create({
@@ -300,8 +300,8 @@ app.get('/logout', async (req, res) => {
     res.send(response.data)
 })
 
-app.get('/translate', async (req, res) => {
-    logger.info("Call /translate");
+app.get('/translateText', async (req, res) => {
+    logger.info("Call /translateText");
     res.setHeader("Access-Control-Allow-Origin", "*");
     cookie = req.query.cookie;
     const api = axios.create({
@@ -324,8 +324,8 @@ app.get('/translate', async (req, res) => {
     res.send(response.data)
 })
 
-app.get('/retrain', async (req, res) => {
-    logger.info("Call /retrain");
+app.get('/retrainModel', async (req, res) => {
+    logger.info("Call /retrainModel");
     res.setHeader("Access-Control-Allow-Origin", "*");
     cookie = req.query.cookie;
     const api = axios.create({
@@ -350,8 +350,8 @@ app.get('/retrain', async (req, res) => {
     res.send(response.data)
 })
 
-app.get('/save', async (req, res) => {
-    logger.info("Call /save");
+app.get('/saveModel', async (req, res) => {
+    logger.info("Call /saveModel");
     res.setHeader("Access-Control-Allow-Origin", "*");
     cookie = req.query.cookie;
     const api = axios.create({
@@ -370,8 +370,8 @@ app.get('/save', async (req, res) => {
     res.send(response.data)
 })
 
-app.get('/load', async (req, res) => {
-    logger.info("Call /load");
+app.get('/loadModel', async (req, res) => {
+    logger.info("Call /loadModel");
     res.setHeader("Access-Control-Allow-Origin", "*");
     cookie = req.query.cookie;
     const api = axios.create({
@@ -390,8 +390,8 @@ app.get('/load', async (req, res) => {
     res.send(response.data)
 })
 
-app.post('/docxtranslate', async (req, res, next) => { req.setTimeout(0); next(); }, upload.single('file'), async (req, res) => {
-    logger.info("Call /docxtranslate");
+app.post('/translateFile', async (req, res, next) => { req.setTimeout(0); next(); }, upload.single('file'), async (req, res) => {
+    logger.info("Call /translateFile");
     res.setHeader("Access-Control-Allow-Origin", "*");
     cookie = req.query.cookie;
     const api = axios.create({
@@ -417,8 +417,8 @@ app.post('/docxtranslate', async (req, res, next) => { req.setTimeout(0); next()
     res.send(response.data)
 })
 
-app.get('/collect', async (req, res) => {
-    logger.info("Call /collect");
+app.get('/collectData', async (req, res) => {
+    logger.info("Call /collectData");
     res.setHeader("Access-Control-Allow-Origin", "*");
     json = req.query.json;
     payload = {
@@ -429,24 +429,9 @@ app.get('/collect', async (req, res) => {
     res.send(response.data);
 })
 
-app.get('/ask', async (req, res) => {
-    logger.info("Call /ask");
-    res.setHeader("Access-Control-Allow-Origin", "*");
-    const api = axios.create({
-        withCredentials: true,
-        xsrfCookieName: 'csrf_access_token',
-        xsrfHeaderName: "x-csrftoken"
-    });
-    text = req.query.text
-    payload = {
-        "text": text,
-    }
-    response = await api.get(global.askRouter, { params: payload })
-    res.send(response.data)
-})
 
-app.post('/upload', async (req, res, next) => { req.setTimeout(0); next(); }, upload.array('file'), async (req, res) => {
-    logger.info("Call /upload");
+app.post('/scalarUpload', async (req, res, next) => { req.setTimeout(0); next(); }, upload.array('file'), async (req, res) => {
+    logger.info("Call /scalarUpload");
     res.setHeader("Access-Control-Allow-Origin", "*");
     const api = axios.create({
         withCredentials: true,
@@ -458,17 +443,100 @@ app.post('/upload', async (req, res, next) => { req.setTimeout(0); next(); }, up
         xsrfHeaderName: "x-csrftoken"
     });
 
-
+    const db_path = "/work/stu/dtu/work/rios-patent-webui/frontend/src/views/file_manager/testfiles/"; 
     for (let i = 0; i < req.files.length; i++) {
-      var formData = new FormData();
-      f = fs.createReadStream(req.files[i].path);
-      formData.append('files', f);
+      const readableStream = fs.createReadStream(req.files[i].path);
       fname = req.query.fname;
-      formData.append('fname', fname[i]);
+      const writeableStream = fs.createWriteStream(db_path + fname[i])
+      readableStream.pipe(writeableStream);
       await unlinkAsync(req.files[i].path);
-      await api.post(global.uploadRouter, formData);
+      var formData = new FormData();
+      formData.append('fname', fname[i]);
+      formData.append('fpath', db_path);
+      // Upload to text database (elasticsearch)
+      response = await api.post(global.uploadRouter, formData);
     }
     res.status(200).end("Files uploaded.")
+})
+
+// Need to figure out why this only works with GET and not POST
+app.get('/vectorUpload', async (req, res) => {
+    logger.info("Call /vectorUpload");
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    const api = axios.create({
+        withCredentials: true,
+        xsrfCookieName: 'csrf_access_token',
+        xsrfHeaderName: "x-csrftoken"
+    });
+
+    fname = req.query.fname;
+    const db_path = "/work/stu/dtu/work/rios-patent-webui/frontend/src/views/file_manager/testfiles/"; 
+    for (let i = 0; i < fname.length; i++) {
+      var formData = new FormData();
+      formData.append('fname', fname[i]);
+      formData.append('fpath', db_path);
+      // Upload to vector database (Milvus)
+      response = await api.post(global.uploadVectorRouter, formData)
+    }
+    res.status(200).end("Files uploaded.")
+})
+
+app.get('/vectorSearch', async (req, res) => {
+    logger.info("Call /vectorSearch");
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    const api = axios.create({
+        withCredentials: true,
+        xsrfCookieName: 'csrf_access_token',
+        xsrfHeaderName: "x-csrftoken"
+    });
+    text = req.query.text
+    payload = {
+        "text": text,
+    }
+    response = await api.get(global.askVectorRouter, { params: payload })
+    ret = {"fname": response.data.results
+          }
+    res.send(ret)
+})
+
+app.get('/filename', async (req, res) => {
+    logger.info("Call /filename");
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    const api = axios.create({
+        withCredentials: true,
+        xsrfCookieName: 'csrf_access_token',
+        xsrfHeaderName: "x-csrftoken"
+    });
+    text = req.query.text
+    payload = {
+        "text": text,
+    }
+    response = await api.get(global.fileRouter, { params: payload })
+    ret = {"fname": response.data.results
+          }
+    res.send(ret)
+})
+
+app.get('/filedata', async (req, res) => {
+    logger.info("Call /filedata");
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    const api = axios.create({
+        withCredentials: true,
+        xsrfCookieName: 'csrf_access_token',
+        xsrfHeaderName: "x-csrftoken"
+    });
+    text = req.query.text
+    payload = {
+        "text": text,
+    }
+    response = await api.get(global.singlefileRouter, { params: payload })
+    fpath = response.data.results['fpath']; 
+    var data = fs.readFileSync(fpath);
+    dataBase64 = data.toString('base64');
+    ret = {"fname": response.data.results['fname'],
+           "fdata": dataBase64
+          }
+    res.send(ret)
 })
 
 module.exports = app
