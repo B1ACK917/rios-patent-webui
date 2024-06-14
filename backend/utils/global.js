@@ -1,4 +1,4 @@
-const port = 23460;
+const port = 23457;
 const loggerMaxOutput = 65536;
 const stringMaxLen = 0x1000000; // ~16MB
 const queryLimit = 1024;
