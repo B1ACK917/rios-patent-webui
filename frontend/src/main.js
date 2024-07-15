@@ -1,12 +1,11 @@
-import Vue from 'vue'
+import * as Vue from 'vue'
 import App from './App.vue'
-import './plugins/element.js'
-import './plugins/clipboard.js'
-import router from './router'
+import VueClipboard from 'vue3-clipboard'
+import ElementPlus from 'element-plus'
+import 'element-plus/dist/index.css'
+import '@tato30/vue-pdf/style.css'
 
-Vue.config.productionTip = false
-
-new Vue({
-  render: h => h(App),
-  router
-}).$mount('#app')
+const app = Vue.createApp(App);
+app.use(VueClipboard);
+app.use(ElementPlus);
+app.mount('#app')

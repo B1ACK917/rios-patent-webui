@@ -1,18 +1,22 @@
 <template>
   <div>
     <el-radio-group v-model="radio1">
-      <el-radio-button label="Before"></el-radio-button>
-      <el-radio-button label="After"></el-radio-button>
+      <el-radio-button value="Before"></el-radio-button>
+      <el-radio-button value="After"></el-radio-button>
     </el-radio-group>
     <div class="search-box">
-      <input type="text" v-model="query" placeholder="Input Patent Number..." @keyup.enter="getRecommendation" />
+      <input
+        type="text"
+        v-model="query"
+        placeholder="Input Patent Number..."
+        @keyup.enter="getRecommendation"/>
       <button @click="getRecommendation">Recommend</button>
     </div>
   </div>
 </template>
 
 <script>
-import axios from 'axios';
+import axios from 'axios'
 import * as r_const from '@/router/consts'
 import * as utils_func from '@/utils/func'
 const sleep = (delay) => new Promise((resolve) => setTimeout(resolve, delay))
@@ -23,39 +27,37 @@ export default {
     return {
       query: '',
       radio1: 'Before',
-    };
+    }
   },
   methods: {
     async getRecommendation() {
-      this.$emit("setLoading", true);
+      this.$emit('setLoading', true)
       let queryID = utils_func.GenNonDuplicateID(24)
-      await axios.get(r_const.queryPostRecommend,
-        {
+      await axios.get(r_const.queryPostRecommend, {
+        params: {
+          queryID,
+          patentID: this.query,
+          sequence: this.radio1.toLowerCase(),
+        },
+      })
+      let recommended_patents = null
+      for (let i = 0; i < 65536; i++) {
+        const response = await axios.get(r_const.queryGetRecommend, {
           params: {
             queryID,
-            patentID: this.query,
-            sequence: this.radio1.toLowerCase()
-          }
-        });
-      let recommended_patents = null;
-      for (let i = 0; i < 65536; i++) {
-        const response = await axios.get(r_const.queryGetRecommend,
-          {
-            params: {
-              queryID
-            }
-          });
+          },
+        })
         if (response.data.status) {
           recommended_patents = response.data.data.recommended_patents
           break
         }
         await sleep(r_const.queryTaskStatusGap)
       }
-      this.$emit("setLoading", false);
-      this.$emit("showRecommendation", recommended_patents);
+      this.$emit('setLoading', false)
+      this.$emit('showRecommendation', recommended_patents)
     },
   },
-};
+}
 </script>
 
 <style scoped>
@@ -72,7 +74,7 @@ export default {
   margin-top: 20px;
 }
 
-input[type="text"] {
+input[type='text'] {
   width: 80%;
   height: 100%;
   padding: 5px;
@@ -91,7 +93,7 @@ button {
   cursor: pointer;
 }
 
-input[type="text"]:focus {
+input[type='text']:focus {
   outline: none !important;
 }
 

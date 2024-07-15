@@ -483,11 +483,11 @@ app.post('/scalarUpload', async (req, res, next) => { req.setTimeout(0); next();
       // Upload to text database (elasticsearch)
       response = await api.post(global.uploadRouter, formData);
     }
-    res.status(200).end("Files uploaded.")
+    res.send(response.data);
 })
 
 // Need to figure out why this only works with GET and not POST
-app.get('/vectorUpload', async (req, res) => {
+app.get('/vectorUpload', async (req, res, next) => { req.setTimeout(0); next(); }, async (req, res) => {
     logger.info("Call /vectorUpload");
     res.setHeader("Access-Control-Allow-Origin", "*");
     const api = axios.create({
@@ -505,7 +505,7 @@ app.get('/vectorUpload', async (req, res) => {
       // Upload to vector database (Milvus)
       response = await api.post(global.uploadVectorRouter, formData)
     }
-    res.status(200).end("Files uploaded.")
+    res.send(response.data);
 })
 
 app.get('/vectorSearch', async (req, res) => {

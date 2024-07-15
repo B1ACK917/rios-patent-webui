@@ -1,5 +1,5 @@
-import Vue from 'vue'
+import * as Vue from 'vue'
 
-import VueClipboard  from 'vue-clipboard2'
+import VueClipboard from 'vue-clipboard2'
 
-Vue.use( VueClipboard )
+Vue.use(VueClipboard)
