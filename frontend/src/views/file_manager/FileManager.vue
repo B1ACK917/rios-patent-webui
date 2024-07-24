@@ -328,11 +328,11 @@ export default {
         }
       )
       this.setProgressBar(60, "Files can be searched by text.");
-      //await axios.get(
-      //  r_const.queryVectorUpload,
-      //  { params: { fname: names } },
-      //  { withCredentials: true }
-      //)
+      await axios.get(
+        r_const.queryVectorUpload,
+        { params: { fname: names } },
+        { withCredentials: true }
+      )
       this.setProgressBar(100, "Files can be searched by semantics.");
       this.submitClicked = false
     },
