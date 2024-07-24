@@ -17,6 +17,10 @@ const { table } = require('console');
 const { promisify } = require('util')
 const unlinkAsync = promisify(fs.unlink)
 
+const util = require('util');
+const stream = require('stream');
+const pipeline = util.promisify(stream.pipeline);
+
 const mult_storage = multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, 'uploads/')
@@ -27,7 +31,7 @@ const mult_storage = multer.diskStorage({
 })
 
 
-const allowedFileExtensions = ['docx', 'pdf', 'xlsx', 'mp4', 'png'];
+const allowedFileExtensions = ['docx', 'pdf', 'xlsx', 'mp4', 'png', 'jpg'];
 
 const upload = multer({
     storage: mult_storage,
@@ -39,7 +43,7 @@ const upload = multer({
             cb(null, true);
         } else {
             cb(null, false);
-            const err = new Error('Only .docx, .pdf and .xlsx format allowed!')
+            const err = new Error('Only .docx, .pdf, .xlsx, .mp4, .png, and .jpg format allowed!')
             err.name = 'ExtensionError'
             return cb(err);
         }
@@ -472,15 +476,26 @@ app.post('/scalarUpload', async (req, res, next) => { req.setTimeout(0); next();
 
     const db_path = "/work/stu/dtu/work/rios-patent-webui/frontend/src/views/file_manager/testfiles/"; 
     for (let i = 0; i < req.files.length; i++) {
+      // Save file to fs
       const readableStream = fs.createReadStream(req.files[i].path);
       fname = req.query.fname;
       const writeableStream = fs.createWriteStream(db_path + fname[i])
       readableStream.pipe(writeableStream);
       await unlinkAsync(req.files[i].path);
+
+      // If xlsx create a pdf version for viewing
+      if (fname[i].endsWith(".xlsx")) {
+        var formData = new FormData();
+        formData.append('files', readableStream);
+        formData.append('fname', fname[i]);
+        response = await api.post(global.xlsxToPDFRouter, formData, {responseType: 'stream'});
+        await pipeline(response.data, fs.createWriteStream(db_path+fname[i].replace(".xlsx","_display_only.pdf")));
+      } 
+
+      // Upload to text database (elasticsearch)
       var formData = new FormData();
       formData.append('fname', fname[i]);
       formData.append('fpath', db_path);
-      // Upload to text database (elasticsearch)
       response = await api.post(global.uploadRouter, formData);
     }
     res.send(response.data);

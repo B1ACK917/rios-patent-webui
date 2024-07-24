@@ -19,6 +19,7 @@ const loginRouter =         "http://10.8.103.89:5000/translator/login"
 const logoutRouter =        "http://10.8.103.89:5000/translator/logout"
 const docxTranslateRouter = "http://10.8.103.89:5000/translator/docxtranslate"
 const collectRouter =       "http://10.8.103.89:5000/translator/collect"
+const xlsxToPDFRouter =     "http://10.8.103.89:5002/xlsxtopdf/create"
 const askVectorRouter =     "http://localhost:8080/milvus/ask"
 const uploadVectorRouter =  "http://localhost:8080/milvus/upload"
 const uploadRouter =        "http://localhost:8082/filemanager/insert"
@@ -47,6 +48,7 @@ module.exports = {
     logoutRouter,
     docxTranslateRouter,
     collectRouter,
+    xlsxToPDFRouter,
     askVectorRouter,
     uploadVectorRouter,
     uploadRouter,

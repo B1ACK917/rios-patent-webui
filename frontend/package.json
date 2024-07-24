@@ -9,7 +9,6 @@
   },
   "dependencies": {
     "@element-plus/icons-vue": "^2.3.1",
-    "@tato30/vue-pdf": "^1.10.0",
     "@vue/cli-upgrade": "^3.12.1",
     "annotpdf": "^1.0.15",
     "axios": "^1.4.0",
