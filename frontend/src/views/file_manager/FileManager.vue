@@ -299,8 +299,6 @@ export default {
     setProgressBar(value, text) {
       var elem = document.getElementById("bar");
       elem.style.width = value + "%";
-      //var pBar = document.getElementById("barText");
-      //pBar.textContent = text;
     },
     async submitFile() {
       this.submitClicked = true;
