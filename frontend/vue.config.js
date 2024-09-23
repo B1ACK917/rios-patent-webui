@@ -1,7 +1,7 @@
 module.exports = {
   transpileDependencies: true,
   devServer: {
-    port: 34567,
+    port: 34568,
     allowedHosts: [
       '.rioslab.org',
       '.malloc.fun'

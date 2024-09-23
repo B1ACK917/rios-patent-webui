@@ -31,7 +31,7 @@ const mult_storage = multer.diskStorage({
 })
 
 
-const allowedFileExtensions = ['docx', 'pdf', 'xlsx', 'mp4', 'png', 'jpg'];
+const allowedFileExtensions = ['docx', 'pdf', 'xlsx', 'mp4', 'png', 'jpg', 'jpeg', 'pptx'];
 
 const upload = multer({
     storage: mult_storage,
@@ -43,7 +43,7 @@ const upload = multer({
             cb(null, true);
         } else {
             cb(null, false);
-            const err = new Error('Only .docx, .pdf, .xlsx, .mp4, .png, and .jpg format allowed!')
+            const err = new Error('Only .docx, .pdf, .xlsx, .pptx, .mp4, .png, .jpeg, and .jpg format allowed!')
             err.name = 'ExtensionError'
             return cb(err);
         }
@@ -484,12 +484,17 @@ app.post('/scalarUpload', async (req, res, next) => { req.setTimeout(0); next();
       await unlinkAsync(req.files[i].path);
 
       // If xlsx create a pdf version for viewing
-      if (fname[i].endsWith(".xlsx")) {
+      if (fname[i].endsWith(".xlsx") || fname[i].endsWith(".pptx")) {
         var formData = new FormData();
         formData.append('files', readableStream);
         formData.append('fname', fname[i]);
-        response = await api.post(global.xlsxToPDFRouter, formData, {responseType: 'stream'});
-        await pipeline(response.data, fs.createWriteStream(db_path+fname[i].replace(".xlsx","_display_only.pdf")));
+        response = await api.post(global.mmToPDFRouter, formData, {responseType: 'stream'});
+        if (fname[i].endsWith(".xlsx")) {
+          await pipeline(response.data, fs.createWriteStream(db_path+fname[i].replace(".xlsx","_display_only.pdf")));
+        } else if (fname[i].endsWith("pptx")){
+          await pipeline(response.data, fs.createWriteStream(db_path+fname[i].replace(".pptx","_display_only.pdf")));
+
+        }
       } 
 
       // Upload to text database (elasticsearch)
@@ -573,6 +578,7 @@ app.get('/filedata', async (req, res) => {
     }
     response = await api.get(global.singlefileRouter, { params: payload })
     fpath = response.data.results['fpath']; 
+    console.log(fpath)
     var data = fs.readFileSync(fpath);
     dataBase64 = data.toString('base64');
     ret = {"fname": response.data.results['fname'],

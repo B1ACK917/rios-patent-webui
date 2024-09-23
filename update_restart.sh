@@ -13,7 +13,7 @@ if [ ! -d "./log" ]; then
     mkdir "./log"
 fi
 
-all_proxy=http://10.8.14.213:7890 git pull
+#all_proxy=http://10.8.14.213:7890 git pull
 
 if [ -f "./temp/backend.pid" ]; then
     kill $(cat ./temp/backend.pid)

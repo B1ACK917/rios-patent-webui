@@ -373,7 +373,7 @@ export default {
       })
       const fdata = response.data.fdata
 
-      if (fname.includes('.pdf') || fname.includes('.xlsx')) {
+      if (fname.includes('.pdf') || fname.includes('.xlsx') || fname.includes('.pptx')) {
         this.showPDF = true
         window.onload = this.setupPdf(atob(fdata));
       } else if (fname.includes('.mp4')) {
