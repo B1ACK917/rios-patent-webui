@@ -2,142 +2,57 @@
   <el-container style="height: 80vh">
     <el-header class="rios-header">
       <div>
-        <img src="@/assets/logo.png" alt="Logo" />
+        Patent Box
+        <img src="@/assets/cereblogo.png" alt="Logo" width="77" height="71"/>
       </div>
     </el-header>
 
-    <el-container>
-      <el-aside style="background-color: rgb(238, 241, 246); overflow: auto" class="sidebar">
-        <el-menu :default-openeds="['1']" id="menu-container">
-          <el-sub-menu index="1">
-            <template slot="title"><el-icon><el-icon-message /></el-icon>RIOS Spark</template>
-            <el-sub-menu index="1-1">
-              <template slot="title">Analyze</template>
-              <el-menu-item index="1-1-1" @click="loadTemplate('LoadTable')">Load Table</el-menu-item>
-              <!-- <el-menu-item index="1-1-2" @click="loadTemplate('WordCount')">Word Count</el-menu-item> -->
-              <el-menu-item index="1-1-3" @click="loadTemplate('ori/ARMCPC')">ARM CPC</el-menu-item>
-              <el-menu-item index="1-1-4" @click="loadTemplate('ori/ARMEXP')">ARM EXP</el-menu-item>
-              <el-menu-item index="1-1-5" @click="loadTemplate('ori/MIPSCPC')">MIPS CPC</el-menu-item>
-            </el-sub-menu>
-            <!-- <el-submenu index="1-2">
-                <template slot="title">Algorithm</template>
-                <el-menu-item index="1-2-1" @click="goTo()">Recommend System</el-menu-item>
-                <el-menu-item index="1-2-2">NLP</el-menu-item>
-              </el-submenu> -->
-            <el-sub-menu index="1-2">
-              <template slot="title">Query</template>
-              <el-menu-item
-                index="1-2-1"
-                @click="loadTemplate('sql/CPCAssignee')">CPC Assignee</el-menu-item>
-              <el-menu-item
-                index="1-2-2"
-                @click="loadTemplate('sql/ARMCPC_SQL')">ARM CPC</el-menu-item>
-              <el-menu-item
-                index="1-2-3"
-                @click="loadTemplate('sql/ARMEXP_SQL')">ARM EXP</el-menu-item>
-              <el-menu-item
-                index="1-2-4"
-                @click="loadTemplate('sql/IPCCPC_SQL')">IPC CPC</el-menu-item>
-            </el-sub-menu>
-          </el-sub-menu>
-          <el-sub-menu index="2">
-            <template slot="title"><el-icon><el-icon-menu /></el-icon>RIOS Database</template>
-            <el-sub-menu index="2-1">
-              <template slot="title">USPTO</template>
-              <el-sub-menu index="2-1-1">
-                <template slot="title">Granted Patents</template>
-                <el-menu-item
-                  v-for="item in tableList['grantedPatents']['tables']"
-                  :key="item.tableName">
-                  {{ item.tableName }}
-                  <el-icon><el-icon-copy-document /></el-icon>
-                </el-menu-item>
-              </el-sub-menu>
-              <el-sub-menu index="2-1-2">
-                <template slot="title">Brief Summary Text</template>
-                <el-menu-item
-                  v-for="item in tableList['briefSum']['tables']"
-                  :key="item.tableName">
-                  {{ item.tableName }}
-                  <el-icon><el-icon-copy-document /></el-icon>
-                </el-menu-item>
-              </el-sub-menu>
-              <el-sub-menu index="2-1-3">
-                <template slot="title">Claim</template>
-                <el-menu-item
-                  v-for="item in tableList['claim']['tables']"
-                  :key="item.tableName">
-                  {{ item.tableName }}
-                  <el-icon><el-icon-copy-document /></el-icon>
-                </el-menu-item>
-              </el-sub-menu>
-              <el-sub-menu index="2-1-4">
-                <template slot="title">Detail Description Text</template>
-                <el-menu-item
-                  v-for="item in tableList['detailDesc']['tables']"
-                  :key="item.tableName">
-                  {{ item.tableName }}
-                  <el-icon><el-icon-copy-document /></el-icon>
-                </el-menu-item>
-              </el-sub-menu>
-              <el-sub-menu index="2-1-5">
-                <template slot="title">Drawing Description Text</template>
-                <el-menu-item
-                  v-for="item in tableList['drawDesc']['tables']"
-                  :key="item.tableName">
-                  {{ item.tableName }}
-                  <el-icon><el-icon-copy-document /></el-icon>
-                </el-menu-item>
-              </el-sub-menu>
-            </el-sub-menu>
-          </el-sub-menu>
-        </el-menu>
-      </el-aside>
+    <el-container class='patent-container'>
+      <!--- <el-tabs
+        v-model="editableTabsValue"
+        type="card"
+        @tab-remove="removeTab"> --->
 
-      <el-container>
-        <el-tabs
-          v-model="editableTabsValue"
-          type="card"
-          @tab-remove="removeTab">
-          <el-tab-pane label="Spark Executor" name="executor">
-            <r-editor
-              ref="childEditor"
-              @openNotification="openNotification"
-              @setOutput="setOutput"
-              @setResponseLoading="setResponseLoading"
-              @setTable="setTable"></r-editor>
-          </el-tab-pane>
-          <el-tab-pane label="Spark Response" name="response">
-            <r-response ref="responseTab"></r-response>
-          </el-tab-pane>
-          <el-tab-pane label="RIOS SQLChat" name="sqlgen">
-            <r-sqlgen
-              @openNotification="openNotification"
-              @setTable="setTable"
-              @clearTable="clearTable"></r-sqlgen>
-          </el-tab-pane>
-          <el-tab-pane label="Execution Result" name="result">
-            <r-table ref="resultTab"></r-table>
-          </el-tab-pane>
-          <el-tab-pane label="RIOS Search" name="search">
+        <!--- <el-tab-pane label="Patent Search" name="search"> --->
             <r-search></r-search>
-          </el-tab-pane>
-          <el-tab-pane label="RIOS Translator" name="translator">
-            <r-translator></r-translator>
-          </el-tab-pane>
-          <el-tab-pane label="RIOS Collect" name="collect">
-            <r-collect></r-collect>
-          </el-tab-pane>
-          <el-tab-pane label="RIOS FileManager" name="filemanager">
-            <r-filemanage></r-filemanage>
-          </el-tab-pane>
-        </el-tabs>
-      </el-container>
+        <!--- </el-tab-pane> --->
+
+      <!---   <el-tab-pane label="Spark Executor" name="executor">
+          <r-editor
+            ref="childEditor"
+            @openNotification="openNotification"
+            @setOutput="setOutput"
+            @setResponseLoading="setResponseLoading"
+            @setTable="setTable"></r-editor>
+        </el-tab-pane>
+        <el-tab-pane label="Spark Response" name="response">
+          <r-response ref="responseTab"></r-response>
+        </el-tab-pane>
+        <el-tab-pane label="RIOS SQLChat" name="sqlgen">
+          <r-sqlgen
+            @openNotification="openNotification"
+            @setTable="setTable"
+            @clearTable="clearTable"></r-sqlgen>
+        </el-tab-pane>
+        <el-tab-pane label="Execution Result" name="result">
+          <r-table ref="resultTab"></r-table>
+        </el-tab-pane>
+        <el-tab-pane label="RIOS Translator" name="translator">
+          <r-translator></r-translator>
+        </el-tab-pane>
+        <el-tab-pane label="RIOS Collect" name="collect">
+          <r-collect></r-collect>
+        </el-tab-pane> 
+        <el-tab-pane label="RIOS FileManager" name="filemanager">
+          <r-filemanage></r-filemanage>
+        </el-tab-pane> 
+      </el-tabs> --->
     </el-container>
   </el-container>
 </template>
 
 <script>
+/* eslint-disable */
 import {
   Message as ElIconMessage,
   Menu as ElIconMenu,
@@ -150,28 +65,29 @@ import RIOSResponse from './home/RIOSResponse.vue'
 import SearchPage from './recommend/SearchPage.vue'
 import SQLGenPage from './home/RIOSText2sql.vue'
 import RIOSTranslator from './home/RIOSTranslator.vue'
-import RIOSCollect from './home/RIOSCollect.vue'
+//import RIOSCollect from './home/RIOSCollect.vue'
 import FileManager from './file_manager/FileManager.vue'
 import * as r_const from '@/router/consts'
 import axios from 'axios'
 
 export default {
   components: {
-    'r-editor': RIOSEditor,
-    'r-table': RIOSTable,
-    'r-response': RIOSResponse,
     'r-search': SearchPage,
-    'r-sqlgen': SQLGenPage,
-    'r-translator': RIOSTranslator,
-    'r-collect': RIOSCollect,
-    'r-filemanage': FileManager,
+    'r-editor': RIOSEditor,
+    //'r-table': RIOSTable,
+    //'r-response': RIOSResponse,
+    //'r-sqlgen': SQLGenPage,
+    //'r-translator': RIOSTranslator,
+    //'r-collect': RIOSCollect,
+    //'r-filemanage': FileManager,
     ElIconMessage,
     ElIconMenu,
     ElIconCopyDocument,
   },
   data() {
     return {
-      editableTabsValue: 'executor',
+      lang: 'EN',
+      editableTabsValue: 'search',
       tabIndex: 1,
       tableList: {
         grantedPatents: {
@@ -198,6 +114,13 @@ export default {
     }
   },
   methods: {
+    toggleLanguage() {
+      if (this.lang == "EN") {
+        this.lang = "CN";
+      } else {
+        this.lang = "EN";
+      }
+    },
     addTab() {
       let newTabName = ++this.tabIndex + ''
       this.editableTabs.push({
@@ -296,6 +219,7 @@ export default {
 }
 
 .rios-header {
+  font-size: 50px;
   margin: 20px;
 }
 
@@ -307,8 +231,76 @@ export default {
   min-width: 240px;
 }
 
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+.switch input{
+  display: none;
+}
+
+.slider {
+  position:absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: 0.4s;
+  transition: 0.4s
+}
+
+input:checked + .slider {
+  background-color: #ccc;
+}
+
+input:focus + .slider{
+  box-shadow: 0 0 1px #ccc;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}
+
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+
 #menu-container {
   max-height: 80vh;
   overflow: auto;
 }
+
+.patent-container {
+    /* remember to set a width 
+    position: absolute;
+    left: 11%;
+    top: 15%;*/
+    margin-left:10%;
+    margin-top:10px;
+}
+
+
 </style>

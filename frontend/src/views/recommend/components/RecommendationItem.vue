@@ -1,29 +1,116 @@
 <template>
-  <div class="recommendation-item">
-    <div class="title"><a :href="'https://patents.google.com/patent/' + pubNum.replaceAll('-', '') + '/en'">{{ title }}</a>
+  <el-container>
+    <el-aside>
+      <div class="sidebar">
+        <button class="sidebarLinks" @click="openPopup('label', $event)">Labels</button>
+        <button class="sidebarLinks" @click="openPopup('expert', $event)">Expert Knowledge</button>
+        <button class="sidebarLinks" @click="openPopup('rpc', $event)">RPC</button>
+        <button class="sidebarLinks" @click="openPopup('other', $event)">Other</button>
+      </div>
+    </el-aside>
+
+    <div class="modal" v-if="showPopup">
+      <div class="modal-content" ref="modalRef">
+
+        <div class="modal-header">
+          <h1 v-if="showLabel">Labels</h1>
+          <h1 v-if="showExpert">Expert</h1>
+          <h1 v-if="showRPC">RPC</h1>
+          <h1 v-if="showOther">Other</h1>
+        </div>
+
+        <div class="modal-body">
+          <div v-if="showLabel">
+            No defined Labels <br>
+            <input
+             type="text"
+             placeholder="Input Labels"/>
+          </div>
+
+          <div v-if="showExpert">
+            No defined Experts <br>
+            <input
+             type="text"
+             placeholder="Input Experts"/>
+          </div>
+
+          <div v-if="showRPC">
+            No defined RPCs <br>
+            <input
+             type="text"
+             placeholder="Input RPCs"/>
+          </div>
+
+          <div v-if="showOther">
+            No defined Others <br>
+            <input
+             type="text"
+             placeholder="Input Others"/>
+          </div>
+
+        </div>
+
+        <div class="modal-footer">
+          <el-button class="close-button" @click="closePopup">Close</el-button>
+          <el-button class="save-button" @click="save">Save</el-button>
+        </div>
+      </div>
     </div>
-    <div class="pubNum">Publication Number: {{ pubNum }}</div>
-    <div class="abstract">{{ abstract }}</div>
-    <div class="feedback-buttons" id="feedback-buttons">
-        <input type="radio" :name="'feedback' + index.toString()" value="Good">Good
-        <input type="radio" :name="'feedback' + index.toString()" value="Bad">Bad
+
+
+    <div class="recommendation-item">
+
+      <div class="patent-table">
+        <div class="pubNum"><a :href="'https://patents.google.com/patent/' + pubNum.replaceAll('-', '') + '/en'" target="_blank" rel="noopener">{{ pubNum }}</a></div>
+        <div class="field"> <div class="fieldname"> Proposition:&nbsp;</div> <div class="patent-cell"> {{ proposition }} </div></div>
+        <div class="field"> <div class="fieldname"> Problem:&emsp;&ensp;&nbsp;&nbsp;</div> <div class="patent-cell"> {{ problem }} </div></div>
+        <div class="field"> <div class="fieldname"> Result:&emsp;&emsp;&nbsp;&nbsp;&nbsp;&nbsp;</div><div class="patent-cell"> {{ result }} </div></div>
+        <div class="field"> <div class="fieldname"> Tags:&emsp;&emsp;&emsp;&nbsp;&nbsp;&nbsp;</div> <div class="patent-cell"> {{ tags }} </div></div>
+      </div> 
+
+      <div class="feedback-buttons" id="feedback-buttons">
+          (Not Similar) <input type="radio" :name="'feedback' + index.toString()" value="0">0
+          <input type="radio" :name="'feedback' + index.toString()" value="1">1
+          <input type="radio" :name="'feedback' + index.toString()" value="2">2
+          <input type="radio" :name="'feedback' + index.toString()" value="3">3
+          <input type="radio" :name="'feedback' + index.toString()" value="4">4
+          <input type="radio" :name="'feedback' + index.toString()" value="5">5 (Very Similar)
+      </div>
+
     </div>
-  </div>
+  </el-container>
 </template>
 
 <script>
+
 export default {
   name: 'RecommendationItem',
   props: {
-    title: {
-      type: String,
-      required: true
-    },
+    //title: {
+    //  type: String,
+    //  required: true
+    //},
+    //abstract: {
+    //  type: String,
+    //  required: true
+    //},
     pubNum: {
       type: String,
       required: true
     },
-    abstract: {
+    proposition: {
+      type: String,
+      required: true
+    },
+    problem: {
+      type: String,
+      required: true
+    },
+    result: {
+      type: String,
+      required: true
+    },
+    tags: {
       type: String,
       required: true
     },
@@ -31,11 +118,60 @@ export default {
       type: Number,
       required: true
     }
+  },
+  data() {
+    return {
+      showPopup : false,
+      showLabel : false,
+      showExpert : false,
+      showRPC : false,
+      showOther : false,
+      mouseX: 0,
+      mouseY: 0
+    }
+  },
+  methods: {
+    openPopup(type, event) {
+      this.showPopup = true
+      var bodyStyles = document.body.style;
+      bodyStyles.setProperty('--button-left', event.clientX.toString() + "px");
+      bodyStyles.setProperty('--button-top', (event.clientY-220).toString() + "px"); // Based on height of modal
+      if (type == "label") {
+        this.showLabel = true;
+      } else if (type == "expert") {
+        this.showExpert = true;
+      } else if (type == "rpc") {
+        this.showRPC = true;
+      } else if (type == "other") {
+        this.showOther = true;
+      }
+      document.addEventListener('mouseup', this.closeModalOnClickOutside)
+      document.addEventListener('wheel', this.closeModalOnClickOutside)
+    },
+    closePopup() {
+      this.showPopup = false;
+      this.showLabel = false;
+      this.showExpert = false;
+      this.showRPC = false;
+      this.showOther = false;
+      document.removeEventListener('mouseup', this.closeModalOnClickOutside)
+      document.removeEventListener('wheel', this.closeModalOnClickOutside)
+    },
+    closeModalOnClickOutside(event) {
+      const modal = this.$refs.modalRef
+      if (!modal.contains(event.target)) {
+        this.closePopup()
+      }
+    },
+    save() {
+      console.log("saved");
+    }
   }
 }
 </script>
 
 <style scoped>
+
 .recommendation-item {
   width: 100%;
   margin: 0 auto;
@@ -47,6 +183,33 @@ export default {
   border-radius: 5px;
 }
 
+.sidebar {
+  float:left;
+  height: 100px;
+  padding-top:5%;
+  margin-right:5px;
+}
+
+.sidebar button {
+  display: block;
+  text-align:center;
+  width: 100%;
+  height:35px;
+  margin-top: 10px;
+  background-color: #0078d7;
+  color: white;
+  font-weight: bold;
+  border: 1px;
+}
+
+.sidebar button:hover {
+  background-color: #00539b;
+}
+
+.sidebar button:active {
+  background-color: #004b8c;
+}
+
 .title {
   font-size: 20px;
 }
@@ -54,6 +217,7 @@ export default {
 .pubNum {
   margin-top: 5px;
   font-weight: bold;
+  font-size: 20px;
 }
 
 .abstract {
@@ -83,5 +247,80 @@ export default {
   margin-top: 5px;
 
 }
+
+.patent-table {
+  text-align:center;
+}
+
+.field {
+  padding-bottom: 7px;
+  padding-top: 7px;
+  display: flex;
+  margin-top: 4px;
+  margin-bottom: 4px;
+  justify-content: space-between;
+  border-bottom: solid;
+  border-width: 1px;
+}
+
+.fieldname {
+  text-align:left;
+  font-size:16px;
+  font-weight: bold;
+  float: left;
+}
+
+.patent-cell {
+ /* display: inline-block;*/
+  width: 90%;
+  text-align:left;
+  float: right;
+}
+
+
+:root {
+  --button-top: 0;
+  --button-left: 0;
+}
+
+.modal {
+  position: absolute;
+  top: var(--button-top);
+  left: var(--button-left);
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  width: 400px;
+  height: 200px;
+}
+
+.modal-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 5px;
+  max-width: 500px;
+  width: 80 %;
+  position: relative;
+  overflow-y: auto;
+  max-height: 700px;
+  border: 1px solid #ccc;
+}
+
+.modal-header {
+  padding-bottom: 10px;
+  border-bottom: 1px solid #ccc;
+}
+
+.modal-body {
+  padding: 10px 0;
+}
+
+.modal-footer {
+  padding-top: 10px;
+  border-top: 1px solid #ccc;
+  display: flex;
+  justify-content: flex-end;
+}
+
 
 </style>
