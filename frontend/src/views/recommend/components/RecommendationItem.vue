@@ -13,10 +13,10 @@
       <div class="modal-content" ref="modalRef">
 
         <div class="modal-header">
-          <h1 v-if="showLabel">Labels</h1>
-          <h1 v-if="showExpert">Expert</h1>
+          <h1 v-if="showLabel">标签</h1>
+          <h1 v-if="showExpert">专门知识</h1>
           <h1 v-if="showRPC">RPC</h1>
-          <h1 v-if="showOther">Other</h1>
+          <h1 v-if="showOther">此外</h1>
         </div>
 
         <div class="modal-body">
@@ -45,7 +45,7 @@
             没有戏外<br>
             <input
              type="text"
-             placeholder="输入此外"/>
+             placeholder = "输入此外"/>
           </div>
 
         </div>
@@ -61,13 +61,14 @@
     <div class="recommendation-item">
 
       <div class="patent-table">
-        <div class="pubNum"><a :href="'https://patents.google.com/patent/' + pubNum.replaceAll('-', '') + '/en'" target="_blank" rel="noopener">{{ pubNum }}</a> <!--- <el-button class="translateBtn">�<el-button> --->  </div>
+        <div class="pubNum"><a :href="'https://patents.google.com/patent/' + pubNum.replaceAll('-', '') + '/en'" target="_blank" rel="noopener">{{ pubNum }}</a>   </div>
         <div class="field"> <div class="fieldname"> 方案：</div> <div class="patent-cell"> {{ proposition }} </div></div>
         <div class="field"> <div class="fieldname"> 问题：</div> <div class="patent-cell"> {{ problem }} </div></div>
         <div class="field"> <div class="fieldname"> 效果：</div><div class="patent-cell"> {{ result }} </div></div>
         <div class="field"> <div class="fieldname"> 标签：</div> <div class="patent-cell"> {{ tags }} </div></div>
       </div> 
 
+      <!--- <el-button class="translateBtn"> </el-button> ---> 
       <div class="feedback-buttons" id="feedback-buttons">
           (不相似) <input type="radio" :name="'feedback' + index.toString()" value="0">0
           <input type="radio" :name="'feedback' + index.toString()" value="1">1
