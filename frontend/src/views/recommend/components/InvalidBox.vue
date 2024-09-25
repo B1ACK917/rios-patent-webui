@@ -4,9 +4,9 @@
       <input
         type="text"
         v-model="query"
-        placeholder="Input Patent Number..."
+        placeholder="请输入专利号。。。"
         @keyup.enter="getRecommendation"/>
-      <button @click="getRecommendation">Recommend</button>
+      <el-button :loading="loading" @click="getRecommendation">推荐</el-button>
     </div>
   </div>
 </template>
@@ -23,32 +23,24 @@ export default {
   data() {
     return {
       query: '',
+      loading: false,
     }
   },
   methods: {
     async getRecommendation() {
       this.$emit('setLoading', true)
-      //let queryID = utils_func.GenNonDuplicateID(24)
-      //await axios.get(r_const.queryPostRecommend, {
-      //  params: {
-      //    queryID,
-      //    patentID: this.query,
-      //    sequence: 'before',
-      //  },
-      //})
-      let recommended_patents = null
-      //for (let i = 0; i < 65536; i++) {
-      //  const response = await axios.get(r_const.queryGetRecommend, {
-      //    params: {
-      //      queryID,
-      //    },
-      //  })
-      //  if (response.data.status) {
-      //    recommended_patents = response.data.data.recommended_patents
-      //    break
-      //  }
-      //  await sleep(r_const.queryTaskStatusGap)
+      this.loading=true;
+      const response = await axios.get(
+          r_const.queryRecommendInv, 
+          { params: { patentID: this.query } },
+        { withCredentials: true }
+      )
+      let recommended_patents = []
+      //for (let i = 0; i<response.data.lenght; ++i) {
+      //  
       //}
+      recommended_patents = response.data;
+      this.loading=false;
       this.$emit('setLoading', false)
       this.$emit('showRecommendation', recommended_patents, this.query)
     },

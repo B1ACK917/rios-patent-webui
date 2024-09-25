@@ -4,9 +4,9 @@
       <input
         type="text"
         v-model="query"
-        placeholder="Input Patent Number..."
+        placeholder="输入专利号码。。。"
         @keyup.enter="getRecommendation"/>
-      <button @click="getRecommendation">Recommend</button>
+      <button @click="getRecommendation">推荐</button>
     </div>
   </div>
 </template>

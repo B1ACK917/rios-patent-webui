@@ -11,6 +11,7 @@ const llmChatPostRouterllama2_70 = "http://macs.nekololi.cn:8070/v1/chat/complet
 const llmChatPostRouterllama13Tuned = "http://10.8.102.47:8001/nl_items/"
 const SQLExecRouter = "http://localhost:8001/sql_es/"
 const recommendRouter = "http://10.8.102.197:8002/recommend_items/"
+const recommendInvRouter =  "http://10.8.102.197:8002/recommend_invalid"
 const translatorRouter =    "http://10.8.103.26:5000/translator/translate"
 const retrainRouter =       "http://10.8.103.26:5000/translator/retrain"
 const saveRouter =          "http://10.8.103.26:5000/translator/save"
@@ -40,6 +41,7 @@ module.exports = {
     llmChatPostRouterllama13Tuned,
     SQLExecRouter,
     recommendRouter,
+    recommendInvRouter,
     translatorRouter,
     retrainRouter,
     saveRouter,

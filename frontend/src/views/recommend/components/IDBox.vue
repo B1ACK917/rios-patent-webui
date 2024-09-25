@@ -1,25 +1,25 @@
 <template>
   <div>
     <div class="modal">
-      <p>Please define your terms here</p>
+      <p>请输入搜索字段</p>
       <div id="wrapper" v-for="(input, k) in terms" :key="k">
         <div class='value'>
           <input type="text" class="form-control" v-model="input.Value" />
         </div>
         <div class='key'>
           <select v-model="input.Key">
-            <option disabled value=""> Please select one </option>
-            <option> Keywords </option>
-            <option> CPC </option>
-            <option> Inventor </option>
-            <option> Assignee </option>
+            <option disabled value=""> 请选着一个 </option>
+            <option value="keywords"> 关键词 </option>
+            <option value="cpc"> CPC </option>
+            <option value="inventor"> 发明者 </option>
+            <option value="assignee"> 受让人 </option>
           </select>
         </div>
       </div>
 
-      <button class="terms_btn" @click="addTerms">Add Term</button>
+      <button class="terms_btn" @click="addTerms">加字段</button>
     </div>
-    <button class="rbutton" @click="getRecommendation">Recommend</button>
+    <button class="rbutton" @click="getRecommendation">推荐</button>
   </div>
 </template>
 

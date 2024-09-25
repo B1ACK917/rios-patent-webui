@@ -3,7 +3,7 @@
 
      <el-form class="patent-header" :inline="true">
        <el-form-item>
-         <div class="patent-header-text"> Patent Recommendation System </div>
+         <div class="patent-header-text"> 专利推荐系统 </div>
        </el-form-item>
 
        <el-form-item>
@@ -13,9 +13,9 @@
            </el-button>
            <template #dropdown>
              <el-dropdown-menu>
-               <el-dropdown-item :command="{action: 'invalidation'}">Invalidation Search</el-dropdown-item>
-               <el-dropdown-item :command="{action: 'defense'}">Infringement Defense</el-dropdown-item>
-               <el-dropdown-item :command="{action: 'general'}">General Search</el-dropdown-item>
+               <el-dropdown-item :command="{action: 'invalidation'}">专利无效推荐</el-dropdown-item>
+               <el-dropdown-item :command="{action: 'defense'}">防专利侵权推荐</el-dropdown-item>
+               <el-dropdown-item :command="{action: 'general'}">专利通用推荐</el-dropdown-item>
              </el-dropdown-menu>
            </template>
          </el-dropdown>
@@ -25,10 +25,10 @@
 
     <el-container>
       <el-header class="header-tabs">
-      <b>Search By: </b>
+      <b>搜索方式: </b>
         <el-tabs class="demo-tabs" :stretch="true" @tab-click="handleTabClick">
 
-          <el-tab-pane label="Function">
+          <el-tab-pane label="作用">
 
             <div class="search-container">
               <invalid-box v-if="showInvalid"
@@ -44,7 +44,7 @@
             </div>
           </el-tab-pane>
 
-          <el-tab-pane label="Labels">
+          <el-tab-pane label="专利标签">
             <div class="search-container">
               <label-box  v-if="showLabels"
                 @showRecommendation="showRecommendation"
@@ -53,7 +53,7 @@
             </div>
           </el-tab-pane>
 
-          <el-tab-pane label="Expert Knowledge">
+          <el-tab-pane label="专门知识">
             <div class="search-container">
               <ek-box v-if="showEK" 
                 @showRecommendation="showRecommendation"
@@ -76,8 +76,6 @@
     </el-container>
       
     <div v-loading="recommendLoading" v-if="showFeedback" class="feedbackContainer">
-
-
       <h3><b> {{ query }}</b></h3>
 
       <el-button
@@ -86,7 +84,7 @@
         type="primary"
         :loading="feedback_clicked"
         @click="saveExec"
-        id="saveBtn">Save Feedback</el-button>
+        id="saveBtn">保存反馈</el-button>
 
       <div class="recommendations">
         <div class="recommendation-list">
@@ -103,9 +101,11 @@
             :abstract="item.abstract" --->
         </div>
       </div>
-      <button @click="prevPage" class = "pageCtrl"> Prev </button>
-      <button  v-for="n in this.totalRecs" class="link" @click="nextNRecs(n)" :key="n"> <u> {{n}} </u> </button>
-      <button @click="nextPage" class = "pageCtrl"> Next </button>
+      <div class="pageCtrls">
+        <button @click="prevPage" class = "pageCtrl"> 上 </button>
+        <button  v-for="n in this.totalRecs" class="link" @click="nextNRecs(n)" :key="n"> <u> {{n}} </u> </button>
+        <button @click="nextPage" class = "pageCtrl"> 下 </button>
+      </div>
     </div>
   </div>
 </template>
@@ -139,7 +139,7 @@ export default {
       showEK: false,
       showRPC: false,
       feedback_clicked: false,
-      searchType: "Invalidation Search",
+      searchType: "专利无效推荐",
       query: "",
       recommendations: [],
       slicedRecommendations: [],
@@ -166,7 +166,7 @@ export default {
   },
   methods: {
     handleTabClick(tab, event) {
-      if (tab.props.label=="Function") {
+      if (tab.props.label=="作用") {
         this.recommendations = this.functionBackup;
         this.slicedRecommendations = this.recommendations.slice(0, this.perPage);
         this.showInfringement=false;
@@ -174,16 +174,16 @@ export default {
         this.showLabels = false;
         this.showEK = false;
         this.showRPC = false;
-        if (this.searchType == "Invalidation Search") {
+        if (this.searchType == "专利无效推荐") {
           this.showInvalid = true;
-        } else if (this.searchType == "General Search") {
+        } else if (this.searchType == "专利通用推荐") {
           this.showGeneral = true;
-        } else if (this.searchType == "Infringement Defense") {
+        } else if (this.searchType == "防专利侵权推荐") {
           this.showInfringement = true; 
         }
         this.showDropdown = true;
 
-      } else if (tab.props.label=="Labels") {
+      } else if (tab.props.label=="专利标签") {
         this.recommendations = this.labelsBackup;
         this.slicedRecommendations = this.recommendations.slice(0, this.perPage);
         this.showInvalid=false;
@@ -195,7 +195,7 @@ export default {
         this.showRPC = false;
         this.showDropdown = false;
 
-      } else if (tab.props.label=="Expert Knowledge") {
+      } else if (tab.props.label=="专门知识") {
         this.recommendations = this.ekBackup;
         this.slicedRecommendations = this.recommendations.slice(0, this.perPage);
         this.showInvalid=false;
@@ -227,7 +227,7 @@ export default {
       if (command.action === 'invalidation') {
         this.recommendations = [];
         this.slicedRecommendations = [];
-        this.searchType = "Invalidiation Search"
+        this.searchType = "专利无效推荐"
         this.showInvalid=true;
         this.showGeneral=false;
         this.showInfringement=false;
@@ -236,14 +236,14 @@ export default {
       else if (command.action === 'defense') {
         this.recommendations = [];
         this.slicedRecommendations = [];
-        this.searchType = "Infringement Defense"
+        this.searchType = "防专利侵权推荐"
         this.showInvalid=false;
         this.showGeneral=false;
         this.showInfringement=true;
         this.showFeedback = false;
       }
       else if (command.action === 'general') {
-        this.searchType = "General Search"
+        this.searchType = "专利通用推荐"
         this.recommendations = [];
         this.slicedRecommendations = [];
         this.showInvalid=false;
@@ -287,12 +287,12 @@ export default {
       this.showLabels = false;
       this.showRPC = false;
       this.showEK = false;
-      for (let i = 0; i < 14; i++) {
-        let pubNum = "US-10002973-B2";
-        let proposition = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec felis ante, porta vitae metus eget, euismod condimentum diam. Vivamus vel semper libero. Morbi non urna quis purus consectetur rhoncus. Phasellus et libero eget libero rutrum condimentum non sit amet velit. Aliquam vehicula pretium turpis. Aliquam eu magna et neque vulputate.";
-        let problem = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec felis ante, porta vitae metus eget, euismod condimentum diam. Vivamus vel semper libero. Morbi non urna quis purus consectetur rhoncus. Phasellus et libero eget libero rutrum condimentum non sit amet velit. Aliquam vehicula pretium turpis. Aliquam eu magna et neque vulputate.";
-        let result = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec felis ante, porta vitae metus eget, euismod condimentum diam. Vivamus vel semper libero. Morbi non urna quis purus consectetur rhoncus. Phasellus et libero eget libero rutrum condimentum non sit amet velit. Aliquam vehicula pretium turpis. Aliquam eu magna et neque vulputate.";
-        let tags = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque vehicula felis sapien, id viverra nibh mattis id. Quisque sed metus.";
+      for (let i = 0; i < items.length; i++) {
+        let pubNum = items[i].publication_number;
+        let proposition = items[i].method;
+        let problem = items[i].problem;
+        let result = items[i].effect;
+        let tags = "当前没有标签。。。";
         this.recommendations.push({
           pubNum,
           proposition,
@@ -460,7 +460,13 @@ button.link {
 
 }
 
+.pageCtrls{
+  display:inline;
+
+}
+
 .pageCtrl {
+  display:inline;
   background-color: #0078d7;
   color: white;
   border: none;

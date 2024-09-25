@@ -4,9 +4,9 @@
       <input
         type="text"
         v-model="query"
-        placeholder="Input RPCs..."
+        placeholder="输入RPCs。。。"
         @keyup.enter="getRecommendation"/>
-      <button @click="getRecommendation">Search</button>
+      <button @click="getRecommendation">搜索</button>
     </div>
   </div>
 </template>

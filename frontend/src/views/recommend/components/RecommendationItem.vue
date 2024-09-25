@@ -2,10 +2,10 @@
   <el-container>
     <el-aside>
       <div class="sidebar">
-        <button class="sidebarLinks" @click="openPopup('label', $event)">Labels</button>
-        <button class="sidebarLinks" @click="openPopup('expert', $event)">Expert Knowledge</button>
+        <button class="sidebarLinks" @click="openPopup('label', $event)">专利标签</button>
+        <button class="sidebarLinks" @click="openPopup('expert', $event)">专门知识</button>
         <button class="sidebarLinks" @click="openPopup('rpc', $event)">RPC</button>
-        <button class="sidebarLinks" @click="openPopup('other', $event)">Other</button>
+        <button class="sidebarLinks" @click="openPopup('other', $event)">此外</button>
       </div>
     </el-aside>
 
@@ -21,38 +21,38 @@
 
         <div class="modal-body">
           <div v-if="showLabel">
-            No defined Labels <br>
+            没有标签 <br>
             <input
              type="text"
-             placeholder="Input Labels"/>
+             placeholder="输入标签"/>
           </div>
 
           <div v-if="showExpert">
-            No defined Experts <br>
+            没有专门知识 <br>
             <input
              type="text"
-             placeholder="Input Experts"/>
+             placeholder="输入专门知识"/>
           </div>
 
           <div v-if="showRPC">
-            No defined RPCs <br>
+            没有 RPCs <br>
             <input
              type="text"
-             placeholder="Input RPCs"/>
+             placeholder="输入RPCs"/>
           </div>
 
           <div v-if="showOther">
-            No defined Others <br>
+            没有戏外<br>
             <input
              type="text"
-             placeholder="Input Others"/>
+             placeholder="输入此外"/>
           </div>
 
         </div>
 
         <div class="modal-footer">
-          <el-button class="close-button" @click="closePopup">Close</el-button>
-          <el-button class="save-button" @click="save">Save</el-button>
+          <el-button class="close-button" @click="closePopup">关</el-button>
+          <el-button class="save-button" @click="save">保存</el-button>
         </div>
       </div>
     </div>
@@ -61,20 +61,20 @@
     <div class="recommendation-item">
 
       <div class="patent-table">
-        <div class="pubNum"><a :href="'https://patents.google.com/patent/' + pubNum.replaceAll('-', '') + '/en'" target="_blank" rel="noopener">{{ pubNum }}</a></div>
-        <div class="field"> <div class="fieldname"> Proposition:&nbsp;</div> <div class="patent-cell"> {{ proposition }} </div></div>
-        <div class="field"> <div class="fieldname"> Problem:&emsp;&ensp;&nbsp;&nbsp;</div> <div class="patent-cell"> {{ problem }} </div></div>
-        <div class="field"> <div class="fieldname"> Result:&emsp;&emsp;&nbsp;&nbsp;&nbsp;&nbsp;</div><div class="patent-cell"> {{ result }} </div></div>
-        <div class="field"> <div class="fieldname"> Tags:&emsp;&emsp;&emsp;&nbsp;&nbsp;&nbsp;</div> <div class="patent-cell"> {{ tags }} </div></div>
+        <div class="pubNum"><a :href="'https://patents.google.com/patent/' + pubNum.replaceAll('-', '') + '/en'" target="_blank" rel="noopener">{{ pubNum }}</a> <!--- <el-button class="translateBtn">�<el-button> --->  </div>
+        <div class="field"> <div class="fieldname"> 方案：</div> <div class="patent-cell"> {{ proposition }} </div></div>
+        <div class="field"> <div class="fieldname"> 问题：</div> <div class="patent-cell"> {{ problem }} </div></div>
+        <div class="field"> <div class="fieldname"> 效果：</div><div class="patent-cell"> {{ result }} </div></div>
+        <div class="field"> <div class="fieldname"> 标签：</div> <div class="patent-cell"> {{ tags }} </div></div>
       </div> 
 
       <div class="feedback-buttons" id="feedback-buttons">
-          (Not Similar) <input type="radio" :name="'feedback' + index.toString()" value="0">0
+          (不相似) <input type="radio" :name="'feedback' + index.toString()" value="0">0
           <input type="radio" :name="'feedback' + index.toString()" value="1">1
           <input type="radio" :name="'feedback' + index.toString()" value="2">2
           <input type="radio" :name="'feedback' + index.toString()" value="3">3
           <input type="radio" :name="'feedback' + index.toString()" value="4">4
-          <input type="radio" :name="'feedback' + index.toString()" value="5">5 (Very Similar)
+          <input type="radio" :name="'feedback' + index.toString()" value="5">5 (相似)
       </div>
 
     </div>
@@ -272,9 +272,19 @@ export default {
 
 .patent-cell {
  /* display: inline-block;*/
+  overflow:hidden;
+  text-overflow: ellipsis; 
   width: 90%;
   text-align:left;
   float: right;
+  max-height: 4.5em;
+  line-height: 1.5em;
+}
+
+.patent-cell:hover {
+  text-overflow: inherit;
+  overflow:visible;
+  max-height: 100em;
 }
 
 
@@ -322,5 +332,13 @@ export default {
   justify-content: flex-end;
 }
 
+.translateBtn {
+  margin-left: 10px;
+  text-align:center;
+  background-color: #0078d7;
+  color: white;
+  font-weight: bold;
+  border: 1px;
+}
 
 </style>

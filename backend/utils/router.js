@@ -283,6 +283,17 @@ app.get('/getRecommend', async (req, res) => {
     res.send(checkData)
 })
 
+app.get('/getRecommendInv', async (req, res) => {
+    logger.info("Call /getRecommendInv");
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    patentID = req.query.patentID
+    payload = {
+        "patent_number": patentID,
+    }
+    response = await axios.post(global.recommendInvRouter, payload);
+    res.send(response.data)
+})
+
 // app.get('/recommend', async (req, res) => {
 //     logger.info("Call /recommend");
 //     res.setHeader("Access-Control-Allow-Origin", "*");

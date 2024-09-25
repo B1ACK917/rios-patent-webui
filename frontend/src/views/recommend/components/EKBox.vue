@@ -4,9 +4,9 @@
       <input
         type="text"
         v-model="query"
-        placeholder="Input EKs..."
+        placeholder="输入专门知识。。。"
         @keyup.enter="getRecommendation"/>
-      <button @click="getRecommendation">Search</button>
+      <button @click="getRecommendation">搜索</button>
     </div>
   </div>
 </template>
