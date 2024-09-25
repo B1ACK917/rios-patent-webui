@@ -2,25 +2,23 @@
   <div class="search-page">
 
      <el-form class="patent-header" :inline="true">
-       <el-form-item>
+         <el-form-item>
          <div class="patent-header-text"> 专利推荐系统 </div>
-       </el-form-item>
-
-       <el-form-item>
-         <el-dropdown @command="handleCommand" v-if="showDropdown">
-           <el-button class="dropdown" type="primary">
-             {{searchType}}<el-icon class="el-icon--right"><ElArrowDown /></el-icon>
-           </el-button>
-           <template #dropdown>
-             <el-dropdown-menu>
-               <el-dropdown-item :command="{action: 'invalidation'}">专利无效推荐</el-dropdown-item>
-               <el-dropdown-item :command="{action: 'defense'}">防专利侵权推荐</el-dropdown-item>
-               <el-dropdown-item :command="{action: 'general'}">专利通用推荐</el-dropdown-item>
-             </el-dropdown-menu>
-           </template>
-         </el-dropdown>
-       </el-form-item>
-
+         </el-form-item>
+         <el-form-item>
+            <el-dropdown @command="handleCommand" :disabled="disableDropdown">
+              <el-button class="dropdown" type="primary">
+                {{searchType}}<el-icon class="el-icon--right"><ElArrowDown /></el-icon>
+              </el-button>
+              <template #dropdown>
+                <el-dropdown-menu>
+                  <el-dropdown-item :command="{action: 'invalidation'}">专利无效推荐</el-dropdown-item>
+                  <el-dropdown-item :command="{action: 'defense'}">防专利侵权推荐</el-dropdown-item>
+                  <el-dropdown-item :command="{action: 'general'}">专利通用推荐</el-dropdown-item>
+                </el-dropdown-menu>
+              </template>
+            </el-dropdown>
+         </el-form-item>
      </el-form>
 
     <el-container>
@@ -130,7 +128,7 @@ export default {
       perPage : 10,
       currPage: 1, 
       totalRecs: 0,
-      showDropdown: true,
+      disableDropdown: false,
       showInvalid: true,
       showGeneral: false,
       showInfringement: false,
@@ -165,6 +163,15 @@ export default {
     ElArrowDown,
   },
   methods: {
+    changeDropdownColor(color) {
+      let dropdown = document.getElementsByClassName("dropdown")[0];
+      console.log(dropdown);
+      if (color == "blue") {
+        dropdown.style.backgroundColor = "#0078d7";
+      } else if (color == "gray") {
+        dropdown.style.backgroundColor = "gray";
+      }
+    },
     handleTabClick(tab, event) {
       if (tab.props.label=="作用") {
         this.recommendations = this.functionBackup;
@@ -181,8 +188,8 @@ export default {
         } else if (this.searchType == "防专利侵权推荐") {
           this.showInfringement = true; 
         }
-        this.showDropdown = true;
-
+        this.disableDropdown = false;
+        this.changeDropdownColor("blue");
       } else if (tab.props.label=="专利标签") {
         this.recommendations = this.labelsBackup;
         this.slicedRecommendations = this.recommendations.slice(0, this.perPage);
@@ -193,8 +200,8 @@ export default {
         this.showLabels = true;
         this.showEK = false;
         this.showRPC = false;
-        this.showDropdown = false;
-
+        this.disableDropdown = true;
+        this.changeDropdownColor("gray");
       } else if (tab.props.label=="专门知识") {
         this.recommendations = this.ekBackup;
         this.slicedRecommendations = this.recommendations.slice(0, this.perPage);
@@ -205,8 +212,8 @@ export default {
         this.showLabels = false;
         this.showEK = true;
         this.showRPC = false;
-        this.showDropdown = false;
- 
+        this.disableDropdown = true;
+        this.changeDropdownColor("gray");
       } else if (tab.props.label=="RPC") {
         this.recommendations = this.rpcBackup;
         this.slicedRecommendations = this.recommendations.slice(0, this.perPage);
@@ -217,7 +224,8 @@ export default {
         this.showLabels = false;
         this.showEK = false;
         this.showRPC = true;
-        this.showDropdown = false;
+        this.disableDropdown = true;
+        this.changeDropdownColor("gray");
       }
     },
     async setLoading(status) {
@@ -439,7 +447,6 @@ export default {
 }
 
 .patent-header {
-  text-align:center;
   margin-top:2%;
 }
 
@@ -475,6 +482,7 @@ button.link {
 
 
 .header-tabs {
+  text-align:center;
   align-items: center;
   float:center;
   min-width:555px; /* based on searchbox sizes */
